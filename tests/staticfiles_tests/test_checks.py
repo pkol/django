@@ -1,3 +1,4 @@
+import os
 from unittest import mock
 
 from django.conf import settings
@@ -73,5 +74,15 @@ class FindersCheckTests(SimpleTestCase):
                 'The STATICFILES_DIRS setting should not contain the '
                 'STATIC_ROOT setting.',
                 id='staticfiles.E002',
+            )
+        ])
+
+    @override_settings(STATICFILES_DIRS=[('prefix/', '/fake/path')])
+    def test_prefix_contains_trailing_slash(self):
+        self.assertEqual(check_finders(None),[
+            Error(
+                'The prefix in the STATICFILES_DIRS may not end with '
+                '%s' % (os.sep,),
+                id='staticfiles.E003',
             )
         ])

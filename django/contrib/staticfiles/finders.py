@@ -78,7 +78,13 @@ class FileSystemFinder(BaseFinder):
             ))
         for root in settings.STATICFILES_DIRS:
             if isinstance(root, (list, tuple)):
-                _, root = root
+                prefix, root = root
+                if prefix.endswith(os.sep):
+                    errors.append(Error(
+                        'The prefix in the STATICFILES_DIRS may not end with '
+                        '%s' % (os.sep,),
+                        id='staticfiles.E003',
+                    ))
             if settings.STATIC_ROOT and os.path.abspath(settings.STATIC_ROOT) == os.path.abspath(root):
                 errors.append(Error(
                     'The STATICFILES_DIRS setting should not contain the '
